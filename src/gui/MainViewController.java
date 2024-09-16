@@ -15,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import model.services.DepartmentService;
 
 public class MainViewController implements Initializable {
 
@@ -31,7 +32,7 @@ public class MainViewController implements Initializable {
 	}
 	@FXML
 	public void onMenuItemDepartmentAction() {
-		loadView("/gui/DepartmentList.fxml");
+		loadView2("/gui/DepartmentList.fxml");
 	}
 	@FXML
 	public void onMenuItemAboutAction() {
@@ -50,6 +51,27 @@ public class MainViewController implements Initializable {
 			mainVBox.getChildren().clear(); //limpou todos os filhos de vBox
 			mainVBox.getChildren().add(mainMenu); // adicionou o cabeçalho
 			mainVBox.getChildren().addAll(newVBox.getChildren()); // adicionou os filhos de About;
+			
+		} catch (IOException e) {
+			Alerts.showAlert("IO EXCEPTION", "error loading view", e.getMessage(), AlertType.ERROR);
+		}
+	}
+	private synchronized void loadView2(String absoluteName) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName)); // xml -> código Java
+			VBox newVBox = loader.load();
+			
+			Scene mainScene = Main.getMainScene();
+			VBox  mainVBox = (VBox) ((ScrollPane)mainScene.getRoot()).getContent();
+			
+			Node mainMenu = mainVBox.getChildren().get(0); // guardou o primeiro filho (cabeçalho)
+			mainVBox.getChildren().clear(); //limpou todos os filhos de vBox
+			mainVBox.getChildren().add(mainMenu); // adicionou o cabeçalho
+			mainVBox.getChildren().addAll(newVBox.getChildren()); // adicionou os filhos de Department;
+			
+			DepartmentListController controller = loader.getController(); // eu consigo retornar o controller direto do XML
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
 			
 		} catch (IOException e) {
 			Alerts.showAlert("IO EXCEPTION", "error loading view", e.getMessage(), AlertType.ERROR);
