@@ -1,6 +1,9 @@
 package application;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -43,7 +46,7 @@ public class Main extends Application {
 		return mainScene;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		launch(args);
 	}
 }
